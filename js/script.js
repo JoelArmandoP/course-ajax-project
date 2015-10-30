@@ -33,9 +33,11 @@ function loadData() {
             "<a href='"+ article.web_url +"'>"+ article.headline.main +"</a> <p>" +
             article.snippet + "</p></li>";
             items.push(item);
-        });
+        })
 
         $nytElem.html(items.join(""));
+    }).fail(function(e) {
+        $nytHeaderElem.text('New York Time Articles could not be loaded');
     });
 
     return false;
