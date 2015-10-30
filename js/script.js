@@ -30,8 +30,8 @@ function loadData() {
         var items = [];
         $.each(data.response.docs, function(index, article) {
             var item = "<li id='article-" + index + "' class='article'>" +
-            "<a href='"+ article.web_url +"'>"+ article.headline.main +"</a> <p>" +
-            article.snippet + "</p></li>";
+                "<a href='"+ article.web_url +"'>"+ article.headline.main +"</a> <p>" +
+                article.snippet + "</p></li>";
             items.push(item);
         })
 
@@ -39,6 +39,24 @@ function loadData() {
     }).fail(function(e) {
         $nytHeaderElem.text('New York Time Articles could not be loaded');
     });
+
+    var wikiUrl = 'https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' +
+                cityStr + '&prop=revisions&rvprop=content&srlimit=5&format=json';
+    $wikiElem.text('Relevant wikipedia Links');
+    $.ajax(wikiUrl, {
+        dataType: 'jsonp',
+        headers: { 'Api-User-Agent': 'Joels Udacity Test Page/1.0' },
+        success: function(data, textStatus, jqXHR) {
+            console.log('WP status: ' + textStatus);
+            var items = [];
+            $.each(data.query.search, function(title, article) {
+                var item = "<li id='article-" + article.title + "' class='article'>" +
+                "<a href='https://en.wikipedia.org/wiki/"+ article.title +"'>"+ article.title +"</a></li>";
+            items.push(item);
+        })
+
+        $wikiElem.html(items.join(""));
+    }});
 
     return false;
 };
