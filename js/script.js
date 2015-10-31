@@ -1,3 +1,4 @@
+'use strict';
 
 function loadData() {
 
@@ -43,20 +44,25 @@ function loadData() {
     var wikiUrl = 'https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' +
                 cityStr + '&prop=revisions&rvprop=content&srlimit=5&format=json';
     $wikiElem.text('Relevant wikipedia Links');
+    var wikiRequestTimeout = setTimeout(function() {
+        $wikiElem.text('failed to get wikipedia resources');
+    },8000);
+
     $.ajax(wikiUrl, {
         dataType: 'jsonp',
         headers: { 'Api-User-Agent': 'Joels Udacity Test Page/1.0' },
         success: function(data, textStatus, jqXHR) {
-            console.log('WP status: ' + textStatus);
             var items = [];
             $.each(data.query.search, function(title, article) {
                 var item = "<li id='article-" + article.title + "' class='article'>" +
                 "<a href='https://en.wikipedia.org/wiki/"+ article.title +"'>"+ article.title +"</a></li>";
             items.push(item);
-        })
+            });
 
-        $wikiElem.html(items.join(""));
-    }});
+            $wikiElem.html(items.join(""));
+            clearTimeOut(wikiRequestTimeout);
+        }
+    });
 
     return false;
 };
